@@ -2,33 +2,44 @@ import os
 from openpyxl import Workbook
 from itertools import zip_longest
 
-# directory/folder path
-dir_path_1 = input("path 1: ")
-dir_path_2 = input("path 2: ")
-# list to store files
-res1 = []
-res2 = []
-# Iterate directory
-for file_path in os.listdir(dir_path_1):
-    # check if current file_path is a file
-    if os.path.isfile(os.path.join(dir_path_1, file_path)):
-        # add filename to list
-        res1.append(file_path)
-for file_path in os.listdir(dir_path_2):
-    # check if current file_path is a file
-    if os.path.isfile(os.path.join(dir_path_2, file_path)):
-        # add filename to list
-        res2.append(file_path)
+def get_paths():
+    """Get directory paths"""
+    # directory/folder path
+    dir_source = input("Path to the folder with the files you need to rename: ")
+    dir_target = input("Path to the folder with the target files: ")
+    # list to store files
+    return dir_source, dir_target
 
-file_list = zip_longest(res1, res2, fillvalue="")
+def get_file_names():
+    dir_source, dir_target = get_paths()
+    source = ["Source"]
+    target = ["Target"]
+    # Iterate directory
+    for file_path in os.listdir(dir_source):
+        # check if current file_path is a file
+        if os.path.isfile(os.path.join(dir_source, file_path)):
+            # add filename to list
+            source.append(file_path)
+    for file_path in os.listdir(dir_target):
+        # check if current file_path is a file
+        if os.path.isfile(os.path.join(dir_target, file_path)):
+            # add filename to list
+            target.append(file_path)
 
-wb = Workbook()
-ws = wb.active
+    file_list = zip_longest(source, target, fillvalue="")
+    return file_list
+
+def save_file_list_to_excel(file_list):
+    wb = Workbook()
+    ws = wb.active
+    wb.create_sheet()
+
+    for row in file_list:
+        ws.append(row)
+
+    wb.save(filename='data.xlsx')
 
 
-ws_write = wb.create_sheet()
-
-for row in file_list:
-    ws.append(row)
-
-wb.save(filename='data.xlsx')
+if __name__ =="__main__":
+    file_list = get_file_names()
+    save_file_list_to_excel(file_list)
