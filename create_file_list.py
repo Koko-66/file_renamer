@@ -1,16 +1,20 @@
+from itertools import zip_longest
 import os
 from openpyxl import Workbook
-from itertools import zip_longest
+
 
 def get_paths():
     """Get directory paths"""
     # directory/folder path
-    dir_source = input("Path to the folder with the files you need to rename: ")
+    dir_source = input(
+        "Path to the folder with the files you need to rename: ")
     dir_target = input("Path to the folder with the target files: ")
     # list to store files
     return dir_source, dir_target
 
+
 def get_file_names():
+    """Extract file names from folders"""
     dir_source, dir_target = get_paths()
     source = ["Source"]
     target = ["Target"]
@@ -26,10 +30,12 @@ def get_file_names():
             # add filename to list
             target.append(file_path)
 
-    file_list = zip_longest(source, target, fillvalue="")
-    return file_list
+    filename_data = zip_longest(source, target, fillvalue="")
+    return filename_data
+
 
 def save_file_list_to_excel(file_list):
+    """Save filenames to Excel file"""
     wb = Workbook()
     ws = wb.active
     wb.create_sheet()
@@ -40,6 +46,6 @@ def save_file_list_to_excel(file_list):
     wb.save(filename='data.xlsx')
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     file_list = get_file_names()
     save_file_list_to_excel(file_list)
