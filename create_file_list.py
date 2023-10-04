@@ -2,6 +2,7 @@ from itertools import zip_longest
 import os
 from openpyxl import Workbook
 
+
 def get_paths():
     """Get directory paths"""
     # directory/folder path
@@ -16,12 +17,13 @@ def get_file_names():
     """Extract file names from folders"""
     dir_source, dir_target = get_paths()
 
-    source = [file for root, dirs, files in os.walk(dir_source) for file in files if os.path.isfile(os.path.join(dir_source, file))]
-    target = [os.path.join(root.split("\\")[-1], file) for root, dirs, files in os.walk(dir_target) for file in files]
-
-
+    source = [file for root, dirs, files in os.walk(dir_source) for file in sorted(
+        files, key=lambda file: len(file)) if os.path.isfile(os.path.join(dir_source, file))]
+    target = [os.path.join(root.split("\\")[-1], file) for root, dirs, files in os.walk(
+        dir_target) for file in sorted(files, key=lambda file: len(file))]
 
     filename_data = zip_longest(source, target, fillvalue="")
+
     return filename_data
 
 
